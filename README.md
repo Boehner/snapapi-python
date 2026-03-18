@@ -1,0 +1,76 @@
+# snapapi-python
+
+Python SDK for the [SnapAPI](https://snapapi.tech) web intelligence API. Zero dependencies — uses only the Python standard library.
+
+```bash
+pip install snapapi-python
+```
+
+## Quick Start
+
+```python
+from snapapi import SnapAPI
+
+client = SnapAPI()  # reads SNAPAPI_KEY from environment
+
+# Screenshot
+png = client.screenshot("https://github.com", full_page=True)
+open("screenshot.png", "wb").write(png)
+
+# Metadata
+meta = client.metadata("https://github.com")
+print(meta["og_title"])   # "GitHub: Let's build from here"
+print(meta["og_image"])   # "https://..."
+
+# Full page analysis
+data = client.analyze("https://stripe.com")
+print(data["page_type"])    # "product landing page"
+print(data["primary_cta"])  # "Start now"
+print(data["technologies"]) # ["React", "Next.js", "Cloudflare"]
+
+# URL → PDF
+pdf = client.pdf("https://github.com", format="A4")
+open("page.pdf", "wb").write(pdf)
+
+# HTML → image (OG cards, email previews)
+html = '<div style="background:#0d0d0f;color:#fff;padding:80px;font-size:48px">My OG Card</div>'
+img = client.render(html, width=1200, height=630)
+open("og-card.png", "wb").write(img)
+
+# Batch (multiple URLs)
+results = client.batch(["https://a.com", "https://b.com"], endpoint="metadata")
+for r in results:
+    print(r["url"], r.get("title"))
+```
+
+## API Key
+
+Get a free key (100 calls/month, no credit card) at **https://snapapi.tech**.
+
+```bash
+export SNAPAPI_KEY=snap_your_key_here
+```
+
+Or pass it directly: `client = SnapAPI(api_key="snap_your_key_here")`
+
+## Methods
+
+| Method | Returns | Description |
+|---|---|---|
+| `screenshot(url, **kwargs)` | `bytes` | PNG/JPEG/WebP image |
+| `metadata(url)` | `dict` | OG tags, title, favicon, canonical |
+| `analyze(url, screenshot=False)` | `dict` | Page type, CTA, tech stack, + optional screenshot |
+| `pdf(url, **kwargs)` | `bytes` | PDF binary |
+| `render(html, **kwargs)` | `bytes` | HTML → image |
+| `batch(urls, endpoint, params)` | `list[dict]` | Parallel multi-URL processing |
+
+Full parameter reference: [snapapi.tech/docs](https://snapapi.tech/docs)
+
+## Requirements
+
+- Python 3.8+
+- No third-party dependencies
+
+## License
+
+MIT
