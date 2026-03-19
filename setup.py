@@ -19,7 +19,7 @@ with open("README.md", "r", encoding="utf-8") as f:
 
 setup(
     name="snapapi-python",
-    version="0.1.0",
+    version="0.1.1",
     description="Python SDK for the SnapAPI web intelligence API — screenshots, metadata, PDF, page analysis",
     long_description=long_description,
     long_description_content_type="text/markdown",
